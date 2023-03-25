@@ -25,7 +25,9 @@ class Salutation
     end
 
     def available
-      I18n.t("#{I18N_KEY_PREFIX}.available").each_with_object({}) do |s, h|
+      available = {}
+      available[""] = I18n.t("#{I18N_KEY_PREFIX}.default.label")
+      I18n.t("#{I18N_KEY_PREFIX}.available").each_with_object(available) do |s, h|
         h[s.first.to_s] = s.last[:label]
       end
     end
@@ -36,17 +38,29 @@ class Salutation
     @salutation = (salutation || person.try(:salutation)).to_s
   end
 
+  def available
+    r=self.class.available
+    if salutation == 'custom'
+      r[@salutation] = @salutation
+    end
+    r
+  end
+
   def label
     I18n.translate("#{I18N_KEY_PREFIX}.#{salutation}.label")
   end
 
   def value
     gender = person.gender.presence || 'other'
-    I18n.translate("#{I18N_KEY_PREFIX}.#{salutation}.value.#{gender}", attributes)
+    if salutation == 'custom'
+      @salutation
+    else
+      I18n.translate("#{I18N_KEY_PREFIX}.#{salutation}.value.#{gender}", attributes)
+    end
   end
 
   def value_for_household(housemates)
-    join_salutations(housemates.map { |housemate| Salutation.new(housemate, @salutation).value })
+    join_salutations(housemates.map { |housemate| Salutation.new(housemate).value })
   end
 
   def join_salutations(salutations)
@@ -72,12 +86,14 @@ class Salutation
   end
 
   def salutation
-    if self.class.available.keys.include?(@salutation)
+    if not @salutation.blank? and self.class.available.keys.include?(@salutation)
       "available.#{@salutation}"
     elsif @salutation == 'personal' && @person.try(:salutation?)
       "available.#{@person.salutation}"
-    else
+    elsif @salutation.blank?
       'default'
+    else
+      'custom'
     end
   end
 end
