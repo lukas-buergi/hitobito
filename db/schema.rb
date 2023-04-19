@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_05_000000) do
+ActiveRecord::Schema.define(version: 2023_04_19_000000) do
 
   create_table "action_text_rich_texts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -831,6 +831,7 @@ ActiveRecord::Schema.define(version: 2023_04_05_000000) do
     t.string "title"
     t.string "salutation"
     t.string "gender_custom"
+    t.boolean "birth_year_only", default: false, null: false
     t.index ["authentication_token"], name: "index_people_on_authentication_token"
     t.index ["confirmation_token"], name: "index_people_on_confirmation_token", unique: true
     t.index ["email"], name: "index_people_on_email", unique: true
@@ -993,7 +994,7 @@ ActiveRecord::Schema.define(version: 2023_04_05_000000) do
     t.index ["contactable_id", "contactable_type"], name: "index_social_accounts_on_contactable_id_and_contactable_type"
   end
 
-  create_table "subscription_tags", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "subscription_tags", charset: "utf8mb4", force: :cascade do |t|
     t.boolean "excluded", default: false
     t.integer "subscription_id", null: false
     t.integer "tag_id", null: false

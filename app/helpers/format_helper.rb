@@ -79,6 +79,14 @@ module FormatHelper
     I18n.t("activerecord.models.gender_custom.available.#{t}")
   end
 
+  def format_person_birthday(obj)
+    if obj.birth_year_only and obj.birthday != nil
+      obj.birthday.year.to_s
+    else
+      f(obj.birthday)
+    end
+  end
+
   ##############  STANDARD HTML SECTIONS  ############################
 
   # Renders an arbitrary content with the given label. Used for uniform presentation.

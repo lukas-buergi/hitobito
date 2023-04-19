@@ -146,6 +146,8 @@ people:
     enabled: false
   gender_binary:
     enabled: true
+  birth_year_only_allowed:
+    enabled: false
 
 event:
   attachments:
